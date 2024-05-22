@@ -56,13 +56,13 @@ detach(package:plyr)
 table1_dthnum <- regions %>% 
   filter(measure=="Deaths" & metric=="Number" & sex=="Both" &
            year %in% c(1990,2019)) %>% 
-  group_by(location,year,sex) %>% 
-  mutate(wider_sd = if_else((upper-val)>(lower-val),upper,lower),
+  dplyr::group_by(location,year,sex) %>% 
+  dplyr::mutate(wider_sd = if_else((upper-val)>(lower-val),upper,lower),
          sd = (wider_sd - val) / 1.96 * sqrt(1000),
          var = sd^2) %>% 
   dplyr::summarize(val = sum(val),
                    sum_var = sum(var)) %>% 
-  mutate(upper = val + 1.96 * sqrt(sum_var) / sqrt(1000),
+  dplyr::mutate(upper = val + 1.96 * sqrt(sum_var) / sqrt(1000),
          lower = val - 1.96 * sqrt(sum_var) / sqrt(1000)) %>%
   select(-sum_var) %>% 
   pivot_wider(names_from = c("year","sex"),
@@ -79,7 +79,7 @@ table1_dthnum[,2:7] <- round(table1_dthnum[,2:7],digits = 0)
 
 # change the format
 table1_dthnum <- table1_dthnum %>% 
-  mutate(dth_num_1990_ui = paste0(val_1990_both_all_age_deaths_number,
+  dplyr::mutate(dth_num_1990_ui = paste0(val_1990_both_all_age_deaths_number,
                                   " (",lower_1990_both_all_age_deaths_number,
                                   ", ",upper_1990_both_all_age_deaths_number,
                                   ")"),
@@ -100,7 +100,7 @@ table1_asmr <- regions %>%
   select(-cause) %>% 
   pivot_wider(names_from = c("measure","metric"),
               values_from = c("val","upper","lower")) %>% 
-  mutate(age_grp_num = val_Deaths_Number * 10^10 / (val_Deaths_Rate/100),
+  dplyr::mutate(age_grp_num = val_Deaths_Number * 10^10 / (val_Deaths_Rate/100),
          wider_sd = if_else((upper_Deaths_Number - val_Deaths_Number)>
                               (lower_Deaths_Number - val_Deaths_Number),
                             upper_Deaths_Number,lower_Deaths_Number),
@@ -110,7 +110,7 @@ table1_asmr <- regions %>%
   dplyr::summarize(sum_age_grp_num = sum(age_grp_num),
                    val = sum((val_Deaths_Rate/100)*(age_grp_num/sum_age_grp_num)),
                    sum_var = sum(var)) %>% 
-  mutate(sd = 10^10 * sqrt(sum_var) / (sum_age_grp_num * sqrt(1000)),
+  dplyr::mutate(sd = 10^10 * sqrt(sum_var) / (sum_age_grp_num * sqrt(1000)),
          upper = val + 1.96 * sd,
          lower = val - 1.96 * sd) %>% 
   select(-c(sum_age_grp_num,sum_var)) %>% 
@@ -129,7 +129,7 @@ table1_asmr_ratio <- regions %>%
   select(-cause) %>% 
   pivot_wider(names_from = c("measure","metric"),
               values_from = c("val","upper","lower")) %>% 
-  mutate(age_grp_num = val_Deaths_Number * 100000 / ((val_Deaths_Rate/100) / 100000),
+  dplyr::mutate(age_grp_num = val_Deaths_Number * 100000 / ((val_Deaths_Rate/100) / 100000),
          age_elder = if_else(age %in% c("10-14 years","15-19 years",
                                         "20-24 years","25-29 years",
                                         "30-34 years","35-39 years",
@@ -142,7 +142,7 @@ table1_asmr_ratio <- regions %>%
   dplyr::summarize(std_dth_rate = sum((val_Deaths_Rate/100)*std_prop_wt)) %>% 
   pivot_wider(names_from = "age_elder",
               values_from = "std_dth_rate") %>% 
-  mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
+  dplyr::mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
   select(-c(`10-59 years`,`60 plus`)) %>% 
   pivot_wider(names_from = c("year","sex"),
               values_from = "std_dth_rratio")
@@ -231,7 +231,7 @@ table1_asmr_pctchg[2:5] <- round(table1_asmr_pctchg[2:5],digits = 2)
 
 # change the format
 table1_asmr <- table1_asmr %>% 
-  mutate(asmr_1990_ui = paste0(val_1990_both_std_dth_rate,
+  dplyr::mutate(asmr_1990_ui = paste0(val_1990_both_std_dth_rate,
                                " (",lower_1990_both_std_dth_rate,
                                ", ", upper_1990_both_std_dth_rate,
                                ")"),
@@ -245,7 +245,7 @@ table1_asmr <- table1_asmr %>%
             sd_1990_both_std_dth_rate,sd_2019_both_std_dth_rate))
 
 table1_asmr_pctchg <- table1_asmr_pctchg %>% 
-  mutate(pct_chg_ui = paste0(val_pct_chg_std_dth_rate,
+  dplyr::mutate(pct_chg_ui = paste0(val_pct_chg_std_dth_rate,
                              " (",lower_pct_chg_std_dth_rate,
                              ", ",upper_pct_chg_std_dth_rate,")")) %>% 
   select(-c(val_pct_chg_std_dth_rate,
@@ -275,10 +275,10 @@ merged_tbl1 <- left_join(table1_dthnum,table1_asmr,by="location") %>%
 tbl3_dthrate <- regions %>% 
   filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
   select(-cause) %>% 
-  group_by(location,year,sex) %>% 
+  dplyr::group_by(location,year,sex) %>% 
   pivot_wider(names_from = c("sex","measure","metric"),
               values_from = c("val","upper","lower")) %>% 
-  mutate(val_Both_Deaths_Rate = val_Both_Deaths_Rate/100,
+  dplyr::mutate(val_Both_Deaths_Rate = val_Both_Deaths_Rate/100,
          lower_Both_Deaths_Rate = lower_Both_Deaths_Rate/100,
          upper_Both_Deaths_Rate = upper_Both_Deaths_Rate/100,
          sd = if_else((upper_Both_Deaths_Rate - val_Both_Deaths_Rate) > (val_Both_Deaths_Rate - lower_Both_Deaths_Rate), upper_Both_Deaths_Rate - val_Both_Deaths_Rate, val_Both_Deaths_Rate - lower_Both_Deaths_Rate)) %>% 
@@ -363,7 +363,7 @@ tbl3_dthrate_pctchg <- tbl3_dthrate_pctchg %>%
   janitor::clean_names()
 
 tbl3_dthrate_pctchg <- tbl3_dthrate_pctchg %>% 
-  mutate(pct_chg_10_14_ui = paste0(val_pct_chg_std_dth_rate_10_14_years,
+  dplyr::mutate(pct_chg_10_14_ui = paste0(val_pct_chg_std_dth_rate_10_14_years,
                                    " (",lower_pct_chg_std_dth_rate_10_14_years,
                                    ", ",upper_pct_chg_std_dth_rate_10_14_years,
                                    ")"),
@@ -444,11 +444,11 @@ tbl3_dthrate_pctchg <- tbl3_dthrate_pctchg %>%
 tbl3_dthrate2 <- regions %>% 
   filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
   select(-cause) %>% 
-  group_by(location,year,sex) %>% 
+  dplyr::group_by(location,year,sex) %>% 
   pivot_wider(names_from = c("sex","measure","metric"),
               values_from = c("val","upper","lower")) %>%
   select(-c(val_Both_Deaths_Number,upper_Both_Deaths_Number,lower_Both_Deaths_Number)) %>% 
-  mutate(val_Both_Deaths_Rate = round(val_Both_Deaths_Rate,digits = 2),
+  dplyr::mutate(val_Both_Deaths_Rate = round(val_Both_Deaths_Rate,digits = 2),
          upper_Both_Deaths_Rate = round(upper_Both_Deaths_Rate,digits = 2),
          lower_Both_Deaths_Rate = round(lower_Both_Deaths_Rate,digits = 2),
          asmr_95_ui = paste0(val_Both_Deaths_Rate," (",lower_Both_Deaths_Rate,
@@ -576,7 +576,7 @@ fig5_tbl$location <- plyr::llply(fig5_tbl$location, wrapit)
 fig5_tbl$location <- unlist(fig5_tbl$location)
 
 fig5_tbl <- fig5_tbl %>% 
-  mutate(location = factor(location,
+  dplyr::mutate(location = factor(location,
                            c("Global",
                              "South Asia",
                              "Latin America and \n Caribbean",
@@ -593,7 +593,7 @@ fig5_tbl$sex <- plyr::llply(fig5_tbl$sex, wrapit)
 fig5_tbl$sex <- unlist(fig5_tbl$sex)
 
 fig5_tbl <- fig5_tbl %>% 
-  mutate(sex = factor(sex,c("Total population","Women","Men")))
+  dplyr::mutate(sex = factor(sex,c("Total population","Women","Men")))
 
 fig5_tbl %>%
   group_by(location) %>% 
@@ -661,7 +661,7 @@ fig6_tbl$location <- plyr::llply(fig6_tbl$location, wrapit)
 fig6_tbl$location <- unlist(fig6_tbl$location)
 
 fig6_tbl <- fig6_tbl %>% 
-  mutate(location = factor(location,
+  dplyr::mutate(location = factor(location,
                            c("Global",
                              "South Asia",
                              "Latin America and \n Caribbean",
@@ -795,17 +795,17 @@ tbl9_dth_rratio <- super_regions %>%
                                    upper_Deaths_Number,lower_Deaths_Number),
                 sd = (wider_sd - val_Deaths_Number)*10^5 / 1.96 * sqrt(1000),
                 var = sd^2) %>% 
-  group_by(location,year,sex,age) %>% 
-  summarize(sum_dthnum = sum(val_Deaths_Number*10^5),
+  dplyr::group_by(location,year,sex,age) %>% 
+  dplyr::summarize(sum_dthnum = sum(val_Deaths_Number*10^5),
             sum_age_grp_num = sum(age_grp_num), 
             sum_var = sum(var)) %>% 
-  mutate(val_asmr = sum_dthnum / sum_age_grp_num,
+  dplyr::mutate(val_asmr = sum_dthnum / sum_age_grp_num,
          var_asmr = sum_var / (1000 * sum_age_grp_num^2),
          sd_asmr = sqrt(var_asmr)) %>% 
   select(-c(sum_dthnum,sum_age_grp_num,sum_var,var_asmr,sd_asmr)) %>% 
   pivot_wider(names_from = "age",
               values_from = "val_asmr") %>% 
-  mutate(val_asmr_ratio_6460 = `60-64 years` / `60 below`,
+  dplyr::mutate(val_asmr_ratio_6460 = `60-64 years` / `60 below`,
          val_asmr_ratio_6960 = `65-69 years` / `60 below`,
          val_asmr_ratio_7460 = `70-74 years` / `60 below`,
          val_asmr_ratio_7960 = `75-79 years` / `60 below`,
@@ -839,7 +839,7 @@ tbl9_dth_rratio$location <- plyr::llply(tbl9_dth_rratio$location, wrapit)
 tbl9_dth_rratio$location <- unlist(tbl9_dth_rratio$location)
 
 tbl9_dth_rratio <- tbl9_dth_rratio %>% 
-  mutate(location = factor(location,
+  dplyr::mutate(location = factor(location,
                            c("Global",
                              "South Asia",
                              "Latin America and \n Caribbean",
@@ -893,27 +893,27 @@ fig8_tbl <- country %>%
   select(-cause) %>% 
   pivot_wider(names_from = c("measure","metric"),
               values_from = c("val","upper","lower")) %>% 
-  mutate(total_pop = val_Deaths_Number * 100000 / (val_Deaths_Rate / 100000),
+  dplyr::mutate(total_pop = val_Deaths_Number * 100000 / (val_Deaths_Rate / 100000),
          age_elder = if_else(age %in% c("10-14 years","15-19 years",
                                         "20-24 years","25-29 years",
                                         "30-34 years","35-39 years",
                                         "40-44 years","45-49 years",
                                         "50-54 years","55-59 years"),
                              "10-59 years","60 plus")) %>% 
-  group_by(location,year,sex,age_elder) %>% 
-  mutate(sum_age_grp_num = sum(total_pop),
+  dplyr::group_by(location,year,sex,age_elder) %>% 
+  dplyr::mutate(sum_age_grp_num = sum(total_pop),
          std_prop_wt = total_pop / sum_age_grp_num) %>% 
-  summarize(std_dth_rate = sum(val_Deaths_Rate*std_prop_wt)) %>% 
+  dplyr::summarize(std_dth_rate = sum(val_Deaths_Rate*std_prop_wt)) %>% 
   pivot_wider(names_from = "age_elder",
               values_from = "std_dth_rate") %>% 
-  mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
+  dplyr::mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
   select(-c(`10-59 years`,`60 plus`)) %>% 
   pivot_wider(names_from = c("year","sex"),
               values_from = "std_dth_rratio")
 
 fig8_tbl <- left_join(fig8_tbl,sdi_fig7,by="location") %>% 
   inner_join(.,ctry_abbr,by="location") %>% 
-  mutate(super_region = case_when(location %in% c(
+  dplyr::mutate(super_region = case_when(location %in% c(
     "Armenia","Azerbaijan","Georgia","Kazakhstan","Kyrgyzstan",
     "Mongolia","Tajikistan","Turkmenistan","Uzbekistan",
     "Albania","Bosnia and Herzegovina","Bulgaria","Croatia",
@@ -979,7 +979,7 @@ fig8_tbl$super_region <- plyr::llply(fig8_tbl$super_region, wrapit)
 fig8_tbl$super_region <- unlist(fig8_tbl$super_region)
 
 fig8_tbl <- fig8_tbl %>% 
-  mutate(location = factor(super_region,
+  dplyr::mutate(location = factor(super_region,
                            c("South Asia",
                              "Latin America and \n Caribbean",
                              "North Africa and \n Middle East",
@@ -1027,6 +1027,281 @@ fig8_tbl %>% ggplot(aes(x=sdi,y=`2019_Both`))+
 
 # ggsave("figure 8_2019.png", width = 18, height = 12, units = "cm",dpi = 350)
 
+# figure 5. Percent change of ASSR by country SDI, in five OA age-groups
+sdi <- sdi[-668,]
 
+sdi_fig10 <- sdi %>% 
+  select(Location,`1990`,`1997`,`1998`,`2005`,`2006`,`2012`,`2013`,`2019`) %>%
+  dplyr::mutate(`1990`= paste0(str_sub(`1990`,start = 1L, end = 1L),".",
+                        str_sub(`1990`,start = 3L, end = -1L)),
+         `1990` = as.numeric(`1990`),
+         `1997`= paste0(str_sub(`1997`,start = 1L, end = 1L),".",
+                        str_sub(`1997`,start = 3L, end = -1L)),
+         `1997` = as.numeric(`1997`),
+         `1998`= paste0(str_sub(`1998`,start = 1L, end = 1L),".",
+                        str_sub(`1998`,start = 3L, end = -1L)),
+         `1998` = as.numeric(`1998`),
+         `2005`= paste0(str_sub(`2005`,start = 1L, end = 1L),".",
+                        str_sub(`2005`,start = 3L, end = -1L)),
+         `2005` = as.numeric(`2005`),
+         `2006`= paste0(str_sub(`2006`,start = 1L, end = 1L),".",
+                        str_sub(`2006`,start = 3L, end = -1L)),
+         `2006` = as.numeric(`2006`),
+         `2012`= paste0(str_sub(`2012`,start = 1L, end = 1L),".",
+                        str_sub(`2012`,start = 3L, end = -1L)),
+         `2012` = as.numeric(`2012`),
+         `2013`= paste0(str_sub(`2013`,start = 1L, end = 1L),".",
+                        str_sub(`2013`,start = 3L, end = -1L)),
+         `2013` = as.numeric(`2013`),
+         `2019` = paste0(str_sub(`2019`,start = 1L, end = 1L),".",
+                         str_sub(`2019`,start = 3L, end = -1L)),
+         `2019` = as.numeric(`2019`)) %>% 
+  dplyr::mutate(sdi_1997 = case_when(`1997` <= quantile(`1997`,probs = 0.2) ~ 
+                                "Low SDI",
+                              `1997` <= quantile(`1997`,probs = 0.4) & `1997` >
+                                quantile(`1997`,probs = 0.2) ~ "Low-middle SDI",
+                              `1997` <= quantile(`1997`,probs = 0.6) & `1997` >
+                                quantile(`1997`,probs = 0.4) ~ "Middle SDI",
+                              `1997` <= quantile(`1997`,probs = 0.8) & `1997` >
+                                quantile(`1997`,probs = 0.6) ~ "High-middle SDI",
+                              `1997` > quantile(`1997`,probs = 0.8) ~ 
+                                "High SDI"),
+         sdi_2005 = case_when(`2005` <= quantile(`2005`,probs = 0.2) ~ "Low SDI",
+                              `2005` <= quantile(`2005`,probs = 0.4) & `2005` >
+                                quantile(`2005`,probs = 0.2) ~ "Low-middle SDI",
+                              `2005` <= quantile(`2005`,probs = 0.6) & `2005` >
+                                quantile(`2005`,probs = 0.4) ~ "Middle SDI",
+                              `2005` <= quantile(`2005`,probs = 0.8) & `2005` >
+                                quantile(`2005`,probs = 0.6) ~ "High-middle SDI",
+                              `2005` > quantile(`2005`,probs = 0.8) ~ 
+                                "High SDI"),
+         sdi_2012 = case_when(`2012` <= quantile(`2012`,probs = 0.2) ~ "Low SDI",
+                              `2012` <= quantile(`2012`,probs = 0.4) & `2012` >
+                                quantile(`2012`,probs = 0.2) ~ "Low-middle SDI",
+                              `2012` <= quantile(`2012`,probs = 0.6) & `2012` >
+                                quantile(`2012`,probs = 0.4) ~ "Middle SDI",
+                              `2012` <= quantile(`2012`,probs = 0.8) & `2012` >
+                                quantile(`2012`,probs = 0.6) ~ "High-middle SDI",
+                              `2012` > quantile(`2012`,probs = 0.8) ~ 
+                                "High SDI"),
+         sdi_2019 = case_when(`2019` <= quantile(`2019`,probs = 0.2) ~ "Low SDI",
+                              `2019` <= quantile(`2019`,probs = 0.4) & `2019` >
+                                quantile(`2019`,probs = 0.2) ~ "Low-middle SDI",
+                              `2019` <= quantile(`2019`,probs = 0.6) & `2019` >
+                                quantile(`2019`,probs = 0.4) ~ "Middle SDI",
+                              `2019` <= quantile(`2019`,probs = 0.8) & `2019` >
+                                quantile(`2019`,probs = 0.6) ~ "High-middle SDI",
+                              `2019` > quantile(`2019`,probs = 0.8) ~ 
+                                "High SDI")) %>% 
+  select(-c(`1990`,`1997`,`1998`,`2005`,`2006`,`2012`,`2013`,`2019`)) %>% 
+  pivot_longer(sdi_1997:sdi_2019,
+               names_to = "age_change",
+               values_to = "sdi_level") %>% 
+  dplyr::mutate(age_change = recode(age_change,
+                             "sdi_1997" = "Change between 1990 and 1997",
+                             "sdi_2005" = "Change between 1998 and 2005",
+                             "sdi_2012" = "Change between 2006 and 2012",
+                             "sdi_2019" = "Change between 2013 and 2019"))
+
+fig10a_tbl <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" &
+           year %in% c(1990,1997,1998,2005,2006,2012,2013,2019) &
+           location!="Global" &
+           age %in% c("60-64 years","65-69 years","70-74 years","75-79 years",
+                      "80-84 years","85-89 years","90-94 years","95+ years")) %>% 
+  select(-c(cause,upper,lower)) %>% 
+  pivot_wider(names_from = c("sex","measure","metric"),
+              values_from = "val") %>% 
+  dplyr::mutate(age_grp_num = 10^10 * Both_Deaths_Number / Both_Deaths_Rate) %>% 
+  dplyr::group_by(location,year) %>% 
+  dplyr::mutate(total_age_grp_num = sum(age_grp_num),
+         std_wt = age_grp_num / total_age_grp_num) %>% 
+  dplyr::summarize(val_asmr = sum(std_wt*Both_Deaths_Rate)) %>% 
+  pivot_wider(names_from = "year",
+              values_from = "val_asmr") %>% 
+  dplyr::mutate(val_pct_chg_dth_rate_9790 = (`1997` - `1990`)*100 / `1990`,
+         val_pct_chg_dth_rate_0598 = (`2005` - `1998`)*100 / `1998`,
+         val_pct_chg_dth_rate_1206 = (`2012` - `2006`)*100 / `2006`,
+         val_pct_chg_dth_rate_1913 = (`2019` - `2013`)*100 / `2013`) %>% 
+  select(-c(`1990`,`1997`,`1998`,`2005`,`2006`,`2012`,`2013`,`2019`)) %>% 
+  pivot_longer(val_pct_chg_dth_rate_9790:val_pct_chg_dth_rate_1913,
+               names_to = "age_change",
+               values_to = "val_pct_chg_dth_rate") %>% 
+  dplyr::mutate(age_change = recode(age_change,
+                                    "val_pct_chg_dth_rate_9790" = 
+                                      "Change between 1990 and 1997",
+                                    "val_pct_chg_dth_rate_0598" = 
+                                      "Change between 1998 and 2005",
+                                    "val_pct_chg_dth_rate_1206" = 
+                                      "Change between 2006 and 2012",
+                                    "val_pct_chg_dth_rate_1913" = 
+                                      "Change between 2013 and 2019"),
+                age_cat = "60 above")
+
+col_order <- c("location","age_cat","age_change","val_pct_chg_dth_rate")
+fig10a_tbl <- fig10a_tbl[,col_order]
+
+fig10b_tbl <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" &
+           year %in% c(1990,1997,1998,2005,2006,2012,2013,2019) &
+           location!="Global" &
+           age %in% c("60-64 years","65-69 years","70-74 years","75-79 years",
+                      "80-84 years","85-89 years","90-94 years","95+ years")) %>% 
+  select(-c(cause,upper,lower)) %>% 
+  pivot_wider(names_from = c("sex","measure","metric"),
+              values_from = "val") %>% 
+  dplyr::mutate(age_cat = recode(age,"60-64 years" = "60 to <70",
+                          "65-69 years" = "60 to <70",
+                          "70-74 years" = "70 to <80",
+                          "75-79 years" = "70 to <80",
+                          "80-84 years" = "80 above",
+                          "85-89 years" = "80 above",
+                          "90-94 years" = "80 above",
+                          "95+ years" = "80 above"),
+         age_grp_num = 10^10 * Both_Deaths_Number / Both_Deaths_Rate) %>% 
+  dplyr::group_by(location,year,age_cat) %>% 
+  dplyr::mutate(total_age_grp_num = sum(age_grp_num),
+         std_wt = age_grp_num / total_age_grp_num) %>% 
+  dplyr::summarize(val_asmr = sum(std_wt*Both_Deaths_Rate)) %>% 
+  pivot_wider(names_from = "year",
+              values_from = "val_asmr") %>% 
+  dplyr::mutate(val_pct_chg_dth_rate_9790 = (`1997` - `1990`)*100 / `1990`,
+         val_pct_chg_dth_rate_0598 = (`2005` - `1998`)*100 / `1998`,
+         val_pct_chg_dth_rate_1206 = (`2012` - `2006`)*100 / `2006`,
+         val_pct_chg_dth_rate_1913 = (`2019` - `2013`)*100 / `2013`) %>% 
+  select(-c(`1990`,`1997`,`1998`,`2005`,`2006`,`2012`,`2013`,`2019`)) %>% 
+  pivot_longer(val_pct_chg_dth_rate_9790:val_pct_chg_dth_rate_1913,
+               names_to = "age_change",
+               values_to = "val_pct_chg_dth_rate") %>% 
+  dplyr::mutate(age_change = recode(age_change,
+                             "val_pct_chg_dth_rate_9790" = 
+                               "Change between 1990 and 1997",
+                             "val_pct_chg_dth_rate_0598" = 
+                               "Change between 1998 and 2005",
+                             "val_pct_chg_dth_rate_1206" = 
+                               "Change between 2006 and 2012",
+                             "val_pct_chg_dth_rate_1913" = 
+                               "Change between 2013 and 2019"))
+
+fig10_tbl <- bind_rows(fig10a_tbl,fig10b_tbl)
+
+sdi_fig10[which(sdi_fig10$Location=="The Bahamas"),1] <- "Bahamas"
+sdi_fig10[which(sdi_fig10$Location=="Bolivia"),1] <- "Bolivia (Plurinational State of)"
+sdi_fig10[which(sdi_fig10$Location=="Brunei"),1] <- "Brunei Darussalam"
+sdi_fig10[which(sdi_fig10$Location=="Cape Verde"),1] <- "Cabo Verde"
+sdi_fig10[which(sdi_fig10$Location=="Congo (Brazzaville)"),1] <- "Congo"
+sdi_fig10[which(sdi_fig10$Location=="DR Congo"),1] <- "Democratic Republic of the Congo"
+sdi_fig10[which(sdi_fig10$Location=="Czech Republic"),1] <- "Czechia"
+sdi_fig10[which(sdi_fig10$location=="South Korea"),1] <- "Democratic People's Republic of Korea"
+sdi_fig10[which(sdi_fig10$Location=="eSwatini"),1] <- "Eswatini"
+sdi_fig10[which(sdi_fig10$Location=="The Gambia"),1] <- "Gambia"
+sdi_fig10[which(sdi_fig10$Location=="Iran"),1] <- "Iran (Islamic Republic of)"
+sdi_fig10[which(sdi_fig10$Location=="Laos"),1] <- "Lao People's Democratic Republic"
+sdi_fig10[which(sdi_fig10$Location=="Federated States of Micronesia"),1] <- "Micronesia (Federated States of)"
+sdi_fig10[which(sdi_fig10$Location=="North Korea"),1] <- "Republic of Korea"
+sdi_fig10[which(sdi_fig10$Location=="Moldova"),1] <- "Republic of Moldova"
+sdi_fig10[which(sdi_fig10$Location=="Russia"),1] <- "Russian Federation"
+sdi_fig10[which(sdi_fig10$Location=="São Tomé and PrÍncipe"),1] <- "Sao Tome and Principe"
+sdi_fig10[which(sdi_fig10$Location=="Syria"),1] <- "Syrian Arab Republic"
+sdi_fig10[which(sdi_fig10$Location=="Taiwan (province of China)"),1] <- "Taiwan (Province of China)"
+sdi_fig10[which(sdi_fig10$Location=="UK"),1] <- "United Kingdom"
+sdi_fig10[which(sdi_fig10$Location=="Tanzania"),1] <- "United Republic of Tanzania"
+sdi_fig10[which(sdi_fig10$Location=="USA"),1] <- "United States of America"
+sdi_fig10[which(sdi_fig10$Location=="Virgin Islands"),1] <- "United States Virgin Islands"
+sdi_fig10[which(sdi_fig10$Location=="Venezuela"),1] <- "Venezuela (Bolivarian Republic of)"
+sdi_fig10[which(sdi_fig10$Location=="Vietnam"),1] <- "Viet Nam"
+
+colnames(sdi_fig10)[1] <- "location"
+
+merged_fig10_tbl <- inner_join(fig10_tbl,sdi_fig10,by=c('location','age_change'))
+
+wrapit <- function(text) {
+  wtext <- paste(strwrap(text,width=20),collapse=" \n ")
+  return(wtext)
+}
+
+merged_fig10_tbl$age_change <- plyr::llply(merged_fig10_tbl$age_change, wrapit)
+merged_fig10_tbl$age_change <- unlist(merged_fig10_tbl$age_change)
+
+merged_fig10_tbl <- merged_fig10_tbl %>% 
+  dplyr::mutate(age_change = factor(age_change,
+                             c("Change between 1990 \n and 1997",
+                               "Change between 1998 \n and 2005",
+                               "Change between 2006 \n and 2012",
+                               "Change between 2013 \n and 2019")))
+
+merged_fig10_tbl <- merged_fig10_tbl %>% 
+  mutate(age_cat = paste0("OA age-group: age ",age_cat))
+
+wrapit <- function(text) {
+  wtext <- paste(strwrap(text,width=15),collapse=" \n ")
+  return(wtext)
+}
+
+merged_fig10_tbl$age_cat <- plyr::llply(merged_fig10_tbl$age_cat, wrapit)
+merged_fig10_tbl$age_cat <- unlist(merged_fig10_tbl$age_cat)
+
+merged_fig10_tbl$age_cat[merged_fig10_tbl$age_cat=="OA age-group: \n age 80 above"] <- "OA age-group: \n age 80 years and older"
+
+merged_fig10_tbl$age_cat[merged_fig10_tbl$age_cat=="OA age-group: \n age 60 above"] <- "OA age-group: \n age 60 years and older"
+
+merged_fig10_tbl$age_cat[merged_fig10_tbl$age_cat=="OA age-group: \n age 60 to <70"] <- "OA age-group: \n age 60 to <70 years"
+
+merged_fig10_tbl$age_cat[merged_fig10_tbl$age_cat=="OA age-group: \n age 70 to <80"] <- "OA age-group: \n age 70 to <80 years"
+
+merged_fig10_tbl <- merged_fig10_tbl %>% mutate(age_cat = factor(age_cat,
+                                                                 c("OA age-group: \n age 60 years and older",
+                                                                   "OA age-group: \n age 60 to <70 years",
+                                                                   "OA age-group: \n age 70 to <80 years",
+                                                                   "OA age-group: \n age 80 years and older")))
+
+merged_fig10_tbl <- merged_fig10_tbl %>% 
+  dplyr::group_by(age_change,age_cat) %>% 
+  dplyr::mutate(median_pct_chg_asmr = median(val_pct_chg_dth_rate))
+
+merged_fig10_tbl <- merged_fig10_tbl %>% 
+  dplyr::mutate(sdi_level = factor(sdi_level,
+                            levels=c("High SDI",
+                                     "High-middle SDI",
+                                     "Middle SDI",
+                                     "Low-middle SDI",
+                                     "Low SDI")))
+
+merged_fig10_tbl %>% 
+  ggplot(aes(x=val_pct_chg_dth_rate,fill=sdi_level))+
+  geom_histogram()+
+  scale_fill_manual(values = c(`High SDI` = "#54278f",
+                               `High-middle SDI` = "#756bb1",
+                               `Middle SDI` = "#9e9ac8",
+                               `Low-middle SDI` = "#cbc9e2",
+                               `Low SDI` = "#f2f0f7"),
+                    name="SDI")+
+  facet_grid(age_cat~age_change)+
+  xlab("Percent change in age-standardized \n suicide rate by SDI quintile")+
+  ylab("Number of countries")+
+  scale_x_continuous(breaks = seq(from=-50, to=75,by=25),limits = c(-55,80))+
+  scale_y_continuous(breaks = seq(from=0, to=60, by=10))+
+  geom_vline(xintercept = 0)+
+  geom_vline(aes(xintercept=median_pct_chg_asmr),color="gray",
+             linetype="dashed")+
+  theme_bw()+
+  theme(strip.text.x = element_text(size = 8,
+                                    face = "bold",
+                                    margin = margin(0.1,0,0.1,0, "cm")),
+        strip.text.y = element_text(size = 8,
+                                    face = "bold",
+                                    angle = 360),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "bottom",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.text = element_text(family = "Gill Sans",color = "#444444",
+                                   size = 8),
+        legend.title = element_text(family = "Gill Sans",face="bold",
+                                    color = "#444444",size = 8),
+        panel.grid.minor = element_blank(),
+        panel.grid.major = element_blank())
+
+# ggsave("figure 10_2019.jpeg",width = 28,height = 20,units = "cm",dpi = 350)
 
 
