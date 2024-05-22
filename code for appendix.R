@@ -862,4 +862,85 @@ ggpubr::ggarrange(fig1_cbn,fig1_combo1,fig1_combo2_plus,
 #        limitsize = F)
 # Two figures are exported and combined into one through PPT.
 
+# Appendix Figure S2. Percentage change in age-standardized suicide-rates (ASSR) globally (all age groups) between 1990 and 2019.
+fig3_tbl <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  pivot_wider(names_from = c("measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  dplyr::mutate(total_pop = val_Deaths_Number * 100000 / (val_Deaths_Rate / 100000)) %>% 
+  dplyr::group_by(location,year,sex) %>% 
+  mutate(sum_age_grp_num = sum(total_pop),
+         std_prop_wt = total_pop / sum_age_grp_num) %>% 
+  dplyr::summarize(std_dth_rate = sum(val_Deaths_Rate*std_prop_wt)) %>% 
+  pivot_wider(names_from = c("year","sex"),
+              values_from = "std_dth_rate") %>% 
+  dplyr::mutate(pct_chg_asmr = (`2019_Both` - `1990_Both`) * 100 / `1990_Both`) %>% 
+  select(-c(`1990_Both`,`2019_Both`))
+
+colnames(fig3_tbl) <- c("region","asmr_pct_chg")
+
+map.world_joined_fig3 <- left_join(map.world,fig3_tbl,by="region")
+
+map.world_joined_fig3 <- map.world_joined_fig3 %>% 
+  mutate(asmr_pct_chg_cat = case_when(
+    asmr_pct_chg>=(-80) & asmr_pct_chg<(-60) ~ "-80 to <-60",
+    asmr_pct_chg>=(-60) & asmr_pct_chg<(-40) ~ "-60 to <-40",
+    asmr_pct_chg>=(-40) & asmr_pct_chg<(-20) ~ "-40 to <-20",
+    asmr_pct_chg>=(-20) & asmr_pct_chg<0 ~ "-20 to <0",
+    asmr_pct_chg>=0 & asmr_pct_chg<20 ~ "0 to <20",
+    asmr_pct_chg>=20 & asmr_pct_chg<40 ~ "20 to <40",
+    asmr_pct_chg>=40 & asmr_pct_chg<60 ~ "40 to <60",
+    asmr_pct_chg>=60 & asmr_pct_chg<80 ~ "60 to <80",
+    asmr_pct_chg>=80 ~ ">=80",
+    TRUE ~ "")) %>% 
+  filter(asmr_pct_chg_cat!="") %>% 
+  dplyr::mutate(asmr_pct_chg_cat = factor(asmr_pct_chg_cat,
+                                   levels = c("-80 to <-60",
+                                              "-60 to <-40",
+                                              "-40 to <-20",
+                                              "-20 to <0",
+                                              "0 to <20",
+                                              "20 to <40",
+                                              "40 to <60",
+                                              "60 to <80",
+                                              ">=80")))
+
+map.world_joined_fig3 %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  ggsn::scalebar(map.world_joined_fig3,dist = 1500,st.size=6, 
+                 height=0.01, transform=T, model = 'International',
+                 dist_unit = "km",location = "bottomleft")+
+  ggsn::north(map.world_joined_fig3,location = "topright",
+              scale = 0.1,symbol = 1)+
+  theme(panel.background = element_rect(fill = "#efedf5")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,panel.grid = element_blank()
+        ,plot.title = element_text(hjust = 0.5,size = 20)
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.text = element_text(color = "#444444",size = 20)
+        ,legend.title = element_text(face = "bold",color = "#444444",
+                                     size = 30)
+        ,legend.background = element_blank()
+        ,legend.key = element_blank())+
+  borders(database = "world",regions = ctry_vtr,colour = "white")
+
+# ggsave("figure 2a_2019.png",width = 80, height = 40, units = "cm",dpi=300,
+#        limitsize = F)
+
+# Appendix Figure S3. 
+
 
