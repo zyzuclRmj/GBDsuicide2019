@@ -1,0 +1,23 @@
+# the script for manuscript
+# import library
+
+library(tidyverse)
+library(ggmap)
+library(RColorBrewer)
+library(scales)
+library(mapproj)
+library(ggspatial)
+library(sf)
+library(rnaturalearth)
+library(rnaturalearthdata)
+library(grid)
+library(plyr)
+library(dplyr)
+library(gridExtra)
+library(patchwork)
+library(extrafont)
+loadfonts()
+Sys.setenv(R.GSCMD = "C:/Program Files/gs/gs9.52/bin/gswin64c.exe")
+library(ggrepel)
+library(ggpubr)
+library(patchwork)
