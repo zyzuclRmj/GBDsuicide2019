@@ -2360,4 +2360,210 @@ ggpubr::ggarrange(fig4_cbn,fig4_combo1,fig4_combo2_puls,
 #        limitsize = F)
 # Two figures are exported and combined into a new one through PPT.
 
+# Appendix Table S1. Total number of older adult (OA) suicides, OA age-standardized suicide-rates (ASSR) per 100,000 in 1990 and 2019, 
+# total percent change in OA ASSR from 1990 to 2019, with uncertainty intervals (UI), and older-adult to non-older-adult (OA-NOA) suicide-rates ratios, 
+# in 2019, for all countries.
+# total dth number
+app_tbl1_dthnum <- country %>% 
+  filter(measure=="Deaths" & metric=="Number" & sex=="Both" &
+           year %in% c(1990,2019)) %>% 
+  group_by(location,year,sex) %>% 
+  mutate(wider_sd = if_else((upper-val)>(lower-val),upper,lower),
+         sd = (wider_sd - val) / 1.96 * sqrt(1000),
+         var = sd^2) %>% 
+  dplyr::summarize(val = sum(val),
+                   sum_var = sum(var)) %>% 
+  dplyr::mutate(upper = val + 1.96 * sqrt(sum_var) / sqrt(1000),
+         lower = val - 1.96 * sqrt(sum_var) / sqrt(1000)) %>%
+  select(-sum_var) %>% 
+  pivot_wider(names_from = c("year","sex"),
+              values_from = c("val","upper","lower"))
+
+# change the column names
+colnames(app_tbl1_dthnum)[2:7] <-
+  paste0(colnames(app_tbl1_dthnum)[2:7],"_all_age_deaths_number")
+
+app_tbl1_dthnum <- app_tbl1_dthnum %>% janitor::clean_names()
+
+# no decimal
+app_tbl1_dthnum[,2:7] <- round(app_tbl1_dthnum[,2:7],digits = 0)
+
+# change the format
+app_tbl1_dthnum <- app_tbl1_dthnum %>% 
+  dplyr::mutate(dth_num_1990_ui = paste0(val_1990_both_all_age_deaths_number,
+                                  " (",lower_1990_both_all_age_deaths_number,
+                                  ", ",upper_1990_both_all_age_deaths_number,
+                                  ")"),
+         dth_num_2019_ui = paste0(val_2019_both_all_age_deaths_number,
+                                  " (",lower_2019_both_all_age_deaths_number,
+                                  ", ",upper_2019_both_all_age_deaths_number,
+                                  ")")) %>% 
+  select(-c(val_1990_both_all_age_deaths_number,
+            val_2019_both_all_age_deaths_number,
+            upper_1990_both_all_age_deaths_number,
+            lower_1990_both_all_age_deaths_number,
+            upper_2019_both_all_age_deaths_number,
+            lower_2019_both_all_age_deaths_number))
+
+# ASMR
+app_tbl1_asmr <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  pivot_wider(names_from = c("measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  dplyr::mutate(age_grp_num = val_Deaths_Number * 10^10 / val_Deaths_Rate,
+         wider_sd = if_else((upper_Deaths_Number - val_Deaths_Number)>
+                              (lower_Deaths_Number - val_Deaths_Number),
+                            upper_Deaths_Number,lower_Deaths_Number),
+         sd = (wider_sd - val_Deaths_Number) / 1.96 * sqrt(1000),
+         var = sd^2) %>% 
+  dplyr::group_by(location,year,sex) %>% 
+  dplyr::summarize(sum_age_grp_num = sum(age_grp_num),
+                   val = sum(val_Deaths_Rate*(age_grp_num/sum_age_grp_num)),
+                   sum_var = sum(var)) %>% 
+  dplyr::mutate(sd = 10^10 * sqrt(sum_var) / (sum_age_grp_num * sqrt(1000)),
+         upper = val + 1.96 * sd,
+         lower = val - 1.96 * sd) %>% 
+  select(-c(sum_age_grp_num,sum_var)) %>% 
+  pivot_wider(names_from = c("year","sex"),
+              values_from = c("val","lower","upper","sd"))
+
+# change the column names
+colnames(app_tbl1_asmr)[2:9] <- 
+  paste0(colnames(app_tbl1_asmr)[2:9],"_std_dth_rate")
+
+app_tbl1_asmr <- app_tbl1_asmr %>% janitor::clean_names()
+
+# older to younger ASMR ratio
+app_tbl1_asmr_ratio <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  pivot_wider(names_from = c("measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  dplyr::mutate(age_grp_num = val_Deaths_Number * 100000 / (val_Deaths_Rate / 100000),
+         age_elder = if_else(age %in% c("10-14 years","15-19 years",
+                                        "20-24 years","25-29 years",
+                                        "30-34 years","35-39 years",
+                                        "40-44 years","45-49 years",
+                                        "50-54 years","55-59 years"),
+                             "10-59 years","60 plus")) %>% 
+  dplyr::group_by(location,year,sex,age_elder) %>% 
+  dplyr::mutate(sum_age_grp_num = sum(age_grp_num),
+         std_prop_wt = age_grp_num / sum_age_grp_num) %>% 
+  dplyr::summarize(std_dth_rate = sum(val_Deaths_Rate*std_prop_wt)) %>% 
+  pivot_wider(names_from = "age_elder",
+              values_from = "std_dth_rate") %>% 
+  dplyr::mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
+  select(-c(`10-59 years`,`60 plus`)) %>% 
+  pivot_wider(names_from = c("year","sex"),
+              values_from = "std_dth_rratio")
+
+# change the column names
+colnames(app_tbl1_asmr_ratio)[2:3] <- 
+  paste0("val_",colnames(app_tbl1_asmr_ratio)[2:3],
+         "_std_dth_rate_ratio")
+
+app_tbl1_asmr_ratio <- app_tbl1_asmr_ratio %>% janitor::clean_names()
+
+# round to 2 decimal points
+app_tbl1_asmr_ratio[,2:3] <- round(app_tbl1_asmr_ratio[2:3], digits = 2)
+
+# percent change
+# get mean and sd of asmr in 1990 and 2017
+mu1 <- pull(app_tbl1_asmr,val_1990_both_std_dth_rate)
+mu2 <- pull(app_tbl1_asmr,val_2019_both_std_dth_rate)
+
+sd1 <- pull(app_tbl1_asmr,sd_1990_both_std_dth_rate) 
+sd2 <- pull(app_tbl1_asmr,sd_2019_both_std_dth_rate)
+
+# simulation
+lst1 <- list()
+lst2 <- list()
+
+set.seed(1)
+for (i in 1:205) {
+  lst1[[i]] <- sample(rnorm(1000,mean=mu1[i],sd=sd1[i]),
+                      replace = FALSE)
+  lst2[[i]] <- sample(rnorm(1000,mean=mu2[i],sd=sd2[i]),
+                      replace=FALSE)
+}
+
+# percent change,variance and SD
+pct_chg <- list()
+pct_chg_mean <- rep(0,205)
+pct_chg_var <- rep(0,205)
+pct_chg_sd <- rep(0,205)
+
+for (i in 1:205) {
+  pct_chg[[i]] <- (lst2[[i]] - lst1[[i]]) / lst1[[i]]
+  pct_chg_mean[i] <- mean(pct_chg[[i]])
+  pct_chg_var[i] <- var(pct_chg[[i]])
+  pct_chg_sd[i] <- sqrt(pct_chg_var[i])
+}
+
+# p-value, null=0
+p_value_pct_chg_std_dth_rate <- rep(0,205)
+
+for (i in 1:205) {
+  p_value_pct_chg_std_dth_rate[i] <- t.test(x=pct_chg[[i]],mu=0,
+                                            alternative = "two.sided")$p.value
+}
+# since the p-value is very approximate to 0, it's shown as 0
+# here is an example
+t.test(x=pct_chg[[1]],mu=0,alternative = "two.sided")
+
+# create tibble for percent change and its 95% UI
+val_pct_chg_std_dth_rate <- (mu2 - mu1) / mu1
+upper_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate + 1.96 * 
+  (pct_chg_sd / sqrt(1000))
+lower_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate - 1.96 * 
+  (pct_chg_sd / sqrt(1000))
+
+val_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate * 100
+upper_pct_chg_std_dth_rate <- upper_pct_chg_std_dth_rate * 100
+lower_pct_chg_std_dth_rate <- lower_pct_chg_std_dth_rate * 100
+
+location <- pull(app_tbl1_asmr,location)
+
+app_tbl1_asmr_pctchg <- tibble(location,
+                               val_pct_chg_std_dth_rate,
+                               upper_pct_chg_std_dth_rate,
+                               lower_pct_chg_std_dth_rate,
+                               p_value_pct_chg_std_dth_rate)
+
+# round asmr to 2 decimal points
+app_tbl1_asmr[2:9] <- round(app_tbl1_asmr[2:9],digits = 2)
+
+# round pct change to 3 decimal points
+app_tbl1_asmr_pctchg[2:5] <- round(app_tbl1_asmr_pctchg[2:5],digits = 2)
+
+# change the format
+app_tbl1_asmr <- app_tbl1_asmr %>% 
+  dplyr::mutate(asmr_1990_ui = paste0(val_1990_both_std_dth_rate,
+                               " (",lower_1990_both_std_dth_rate,
+                               ", ", upper_1990_both_std_dth_rate,
+                               ")"),
+         asmr_2019_ui = paste0(val_2019_both_std_dth_rate,
+                               " (",lower_2019_both_std_dth_rate,
+                               ", ",upper_2019_both_std_dth_rate,
+                               ")")) %>% 
+  select(-c(val_1990_both_std_dth_rate,lower_1990_both_std_dth_rate,
+            upper_1990_both_std_dth_rate,val_2019_both_std_dth_rate,
+            lower_2019_both_std_dth_rate,upper_2019_both_std_dth_rate,
+            sd_1990_both_std_dth_rate,sd_2019_both_std_dth_rate))
+
+app_tbl1_asmr_pctchg <- app_tbl1_asmr_pctchg %>% 
+  dplyr::mutate(pct_chg_ui = paste0(val_pct_chg_std_dth_rate,
+                             " (",lower_pct_chg_std_dth_rate,
+                             ", ",upper_pct_chg_std_dth_rate,")")) %>% 
+  select(-c(val_pct_chg_std_dth_rate,
+            lower_pct_chg_std_dth_rate,
+            upper_pct_chg_std_dth_rate))
+
+# merge tables together
+app_merged_tbl1 <- left_join(app_tbl1_dthnum,app_tbl1_asmr,by="location") %>% 
+  left_join(.,app_tbl1_asmr_pctchg,by="location") %>% 
+  left_join(.,app_tbl1_asmr_ratio,by="location")
+
+# write.csv(app_merged_tbl1,"Appendix_table1_2019.csv")
 
