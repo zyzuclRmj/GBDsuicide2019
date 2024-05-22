@@ -1,6 +1,8 @@
 # GBDsuicide2019
 This repository is created for publication of article "Absolute and age-relative suicide-rates for women and men age 60 years and older, at the global, region, and nation level, 1990-2019: a systematic analysis of the Global Burden of Disease Study 2019 data" on the Nature Mental Health.
 
+The datasets were downloaded from GBD query tool. They were cleaned and renamed based on their contents.
+
 Code for manuscript: It is the script that included codes for the calculation of estimates of age-standardized suicide rates and rate ratios and their uncertainty intervals. It included the codes for generation of following tables and figures in the manuscript:
    - Table 1. Number of OA suicides, ASSR per 100,000, percent-change from 1990 to 2019 with UI, and OA-NOA suicide ratios in 2019 for all regions.
    - Table 2. ASSR and percent-change between 1990 and 2019 among individuals age 60 and older in 5-year age groups.
