@@ -271,6 +271,209 @@ merged_tbl1 <- left_join(table1_dthnum,table1_asmr,by="location") %>%
 
 # write.csv(merged_tbl1,"Table1_ver2019.csv")
 
+# table 2. ASSR and percent-change between 1990 and 2019 among individuals age 60 and older in 5-year age groups.
+tbl3_dthrate <- regions %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  group_by(location,year,sex) %>% 
+  pivot_wider(names_from = c("sex","measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  mutate(val_Both_Deaths_Rate = val_Both_Deaths_Rate/100,
+         lower_Both_Deaths_Rate = lower_Both_Deaths_Rate/100,
+         upper_Both_Deaths_Rate = upper_Both_Deaths_Rate/100,
+         sd = if_else((upper_Both_Deaths_Rate - val_Both_Deaths_Rate) > (val_Both_Deaths_Rate - lower_Both_Deaths_Rate), upper_Both_Deaths_Rate - val_Both_Deaths_Rate, val_Both_Deaths_Rate - lower_Both_Deaths_Rate)) %>% 
+  select(-c(val_Both_Deaths_Number,upper_Both_Deaths_Number,lower_Both_Deaths_Number)) %>% 
+  pivot_wider(names_from = c("year"),
+              values_from = c("val_Both_Deaths_Rate","upper_Both_Deaths_Rate",
+                              "lower_Both_Deaths_Rate","sd"))
+
+# percent change
+# get mean and sd of asmr in 1990 and 2019
+mu1 <- pull(tbl3_dthrate,val_Both_Deaths_Rate_1990)
+mu2 <- pull(tbl3_dthrate,val_Both_Deaths_Rate_2019)
+
+sd1 <- pull(tbl3_dthrate,sd_1990) 
+sd2 <- pull(tbl3_dthrate,sd_2019)
+
+# simulation
+lst1 <- list()
+lst2 <- list()
+
+set.seed(1)
+for (i in 1:dim(tbl3_dthrate)[1]) {
+  lst1[[i]] <- sample(rnorm(1000,mean=mu1[i],sd=sd1[i]),
+                      replace = FALSE)
+  lst2[[i]] <- sample(rnorm(1000,mean=mu2[i],sd=sd2[i]),
+                      replace=FALSE)
+}
+
+# percent change,variance and SD
+pct_chg <- list()
+pct_chg_mean <- rep(0,dim(tbl3_dthrate)[1])
+pct_chg_var <- rep(0,dim(tbl3_dthrate)[1])
+pct_chg_sd <- rep(0,dim(tbl3_dthrate)[1])
+
+for (i in 1:dim(tbl3_dthrate)[1]) {
+  pct_chg[[i]] <- (lst2[[i]] - lst1[[i]]) / lst1[[i]]
+  pct_chg_mean[i] <- mean(pct_chg[[i]])
+  pct_chg_var[i] <- var(pct_chg[[i]])
+  pct_chg_sd[i] <- sqrt(pct_chg_var[i])
+}
+
+# p-value, null=0
+p_value_pct_chg_std_dth_rate <- rep(0,dim(tbl3_dthrate)[1])
+
+for (i in 1:dim(tbl3_dthrate)[1]) {
+  p_value_pct_chg_std_dth_rate[i] <- t.test(x=pct_chg[[i]],mu=0,
+                                            alternative = "two.sided")$p.value
+}
+# since the p-value is very approximate to 0, it's shown as 0
+# here is an example
+t.test(x=pct_chg[[1]],mu=0,alternative = "two.sided")
+
+# create tibble for percent change and its 95% UI
+val_pct_chg_std_dth_rate <- (mu2 - mu1) / mu1
+upper_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate + 1.96 * 
+  (pct_chg_sd / sqrt(1000))
+lower_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate - 1.96 * 
+  (pct_chg_sd / sqrt(1000))
+
+val_pct_chg_std_dth_rate <- val_pct_chg_std_dth_rate * 100
+upper_pct_chg_std_dth_rate <- upper_pct_chg_std_dth_rate * 100
+lower_pct_chg_std_dth_rate <- lower_pct_chg_std_dth_rate * 100
+
+location <- pull(tbl3_dthrate,location)
+age_grp <- pull(tbl3_dthrate,age)
+
+tbl3_dthrate_pctchg <- tibble(location,
+                              age_grp,
+                              val_pct_chg_std_dth_rate,
+                              upper_pct_chg_std_dth_rate,
+                              lower_pct_chg_std_dth_rate,
+                              p_value_pct_chg_std_dth_rate)
+
+tbl3_dthrate_pctchg[,c(3:6)] <- round(tbl3_dthrate_pctchg[,c(3:6)],digits = 2)
+
+tbl3_dthrate_pctchg <- tbl3_dthrate_pctchg %>% 
+  select(-p_value_pct_chg_std_dth_rate) %>% 
+  pivot_wider(names_from = "age_grp",
+              values_from = c("val_pct_chg_std_dth_rate",
+                              "lower_pct_chg_std_dth_rate",
+                              "upper_pct_chg_std_dth_rate")) %>% 
+  janitor::clean_names()
+
+tbl3_dthrate_pctchg <- tbl3_dthrate_pctchg %>% 
+  mutate(pct_chg_10_14_ui = paste0(val_pct_chg_std_dth_rate_10_14_years,
+                                   " (",lower_pct_chg_std_dth_rate_10_14_years,
+                                   ", ",upper_pct_chg_std_dth_rate_10_14_years,
+                                   ")"),
+         pct_chg_15_19_ui = paste0(val_pct_chg_std_dth_rate_15_19_years,
+                                   " (",lower_pct_chg_std_dth_rate_15_19_years,
+                                   ", ",upper_pct_chg_std_dth_rate_15_19_years,
+                                   ")"),
+         pct_chg_20_24_ui = paste0(val_pct_chg_std_dth_rate_20_24_years,
+                                   " (",lower_pct_chg_std_dth_rate_20_24_years,
+                                   ", ",upper_pct_chg_std_dth_rate_20_24_years,
+                                   ")"),
+         pct_chg_25_29_ui = paste0(val_pct_chg_std_dth_rate_25_29_years,
+                                   " (",lower_pct_chg_std_dth_rate_25_29_years,
+                                   ", ",upper_pct_chg_std_dth_rate_25_29_years,
+                                   ")"),
+         pct_chg_30_34_ui = paste0(val_pct_chg_std_dth_rate_30_34_years,
+                                   " (",lower_pct_chg_std_dth_rate_30_34_years,
+                                   ", ",upper_pct_chg_std_dth_rate_30_34_years,
+                                   ")"),
+         pct_chg_35_39_ui = paste0(val_pct_chg_std_dth_rate_35_39_years,
+                                   " (",lower_pct_chg_std_dth_rate_35_39_years,
+                                   ", ",upper_pct_chg_std_dth_rate_35_39_years,
+                                   ")"),
+         pct_chg_40_44_ui = paste0(val_pct_chg_std_dth_rate_40_44_years,
+                                   " (",lower_pct_chg_std_dth_rate_40_44_years,
+                                   ", ",upper_pct_chg_std_dth_rate_40_44_years,
+                                   ")"),
+         pct_chg_45_49_ui = paste0(val_pct_chg_std_dth_rate_45_49_years,
+                                   " (",lower_pct_chg_std_dth_rate_45_49_years,
+                                   ", ",upper_pct_chg_std_dth_rate_45_49_years,
+                                   ")"),
+         pct_chg_50_54_ui = paste0(val_pct_chg_std_dth_rate_50_54_years,
+                                   " (",lower_pct_chg_std_dth_rate_50_54_years,
+                                   ", ",upper_pct_chg_std_dth_rate_50_54_years,
+                                   ")"),
+         pct_chg_55_59_ui = paste0(val_pct_chg_std_dth_rate_55_59_years,
+                                   " (",lower_pct_chg_std_dth_rate_55_59_years,
+                                   ", ",upper_pct_chg_std_dth_rate_55_59_years,
+                                   ")"),
+         pct_chg_60_64_ui = paste0(val_pct_chg_std_dth_rate_60_64_years,
+                                   " (",lower_pct_chg_std_dth_rate_60_64_years,
+                                   ", ",upper_pct_chg_std_dth_rate_60_64_years,
+                                   ")"),
+         pct_chg_65_69_ui = paste0(val_pct_chg_std_dth_rate_65_69_years,
+                                   " (",lower_pct_chg_std_dth_rate_65_69_years,
+                                   ", ",upper_pct_chg_std_dth_rate_65_69_years,
+                                   ")"),
+         pct_chg_70_74_ui = paste0(val_pct_chg_std_dth_rate_70_74_years,
+                                   " (",lower_pct_chg_std_dth_rate_70_74_years,
+                                   ", ",upper_pct_chg_std_dth_rate_70_74_years,
+                                   ")"),
+         pct_chg_75_79_ui = paste0(val_pct_chg_std_dth_rate_75_79_years,
+                                   " (",lower_pct_chg_std_dth_rate_75_79_years,
+                                   ", ",upper_pct_chg_std_dth_rate_75_79_years,
+                                   ")"),
+         pct_chg_80_84_ui = paste0(val_pct_chg_std_dth_rate_80_84,
+                                   " (",lower_pct_chg_std_dth_rate_80_84,
+                                   ", ",upper_pct_chg_std_dth_rate_80_84,
+                                   ")"),
+         pct_chg_85_89_ui = paste0(val_pct_chg_std_dth_rate_85_89,
+                                   " (",lower_pct_chg_std_dth_rate_85_89,
+                                   ", ",upper_pct_chg_std_dth_rate_85_89,
+                                   ")"),
+         pct_chg_90_94_ui = paste0(val_pct_chg_std_dth_rate_90_94,
+                                   " (",lower_pct_chg_std_dth_rate_90_94,
+                                   ", ",upper_pct_chg_std_dth_rate_90_94,
+                                   ")"),
+         pct_chg_95_plus_ui = paste0(val_pct_chg_std_dth_rate_95_years,
+                                     " (",lower_pct_chg_std_dth_rate_95_years,
+                                     ", ",upper_pct_chg_std_dth_rate_95_years,
+                                     ")")) %>% 
+  select(location,pct_chg_10_14_ui,pct_chg_15_19_ui,pct_chg_20_24_ui,
+         pct_chg_25_29_ui,pct_chg_30_34_ui,pct_chg_35_39_ui,pct_chg_40_44_ui,
+         pct_chg_45_49_ui,pct_chg_50_54_ui,pct_chg_55_59_ui,pct_chg_60_64_ui,
+         pct_chg_65_69_ui,pct_chg_70_74_ui,pct_chg_75_79_ui,pct_chg_80_84_ui,
+         pct_chg_85_89_ui,pct_chg_90_94_ui,pct_chg_95_plus_ui)
+
+tbl3_dthrate2 <- regions %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  group_by(location,year,sex) %>% 
+  pivot_wider(names_from = c("sex","measure","metric"),
+              values_from = c("val","upper","lower")) %>%
+  select(-c(val_Both_Deaths_Number,upper_Both_Deaths_Number,lower_Both_Deaths_Number)) %>% 
+  mutate(val_Both_Deaths_Rate = round(val_Both_Deaths_Rate,digits = 2),
+         upper_Both_Deaths_Rate = round(upper_Both_Deaths_Rate,digits = 2),
+         lower_Both_Deaths_Rate = round(lower_Both_Deaths_Rate,digits = 2),
+         asmr_95_ui = paste0(val_Both_Deaths_Rate," (",lower_Both_Deaths_Rate,
+                             ", ",upper_Both_Deaths_Rate,")")) %>% 
+  select(-c(val_Both_Deaths_Rate,upper_Both_Deaths_Rate,lower_Both_Deaths_Rate)) %>% 
+  pivot_wider(names_from = c("year","age"),
+              values_from = c("asmr_95_ui"))
+
+merged_tbl3 <- left_join(tbl3_dthrate2,tbl3_dthrate_pctchg,
+                         by="location") %>% 
+  filter(location %in% c("Global","East Asia","Southeast Asia",
+                         "Oceania","Central Asia","Central Europe",
+                         "Eastern Europe","High-income Asia Pacific",
+                         "Australasia","Western Europe",
+                         "Southern Latin America","High-income North America",
+                         "Caribbean","Andean Latin America",
+                         "Central Latin America","Tropical Latin America",
+                         "North Africa and Middle East",
+                         "South Asia","Central Sub-Saharan Africa",
+                         "Eastern Sub-Saharan Africa",
+                         "Southern Sub-Saharan Africa",
+                         "Western Sub-Saharan Africa"))
+
+# write.csv(merged_tbl3,"Table 2_ver2019.csv")
+
 
 
 
