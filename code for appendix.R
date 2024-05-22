@@ -941,6 +941,1423 @@ map.world_joined_fig3 %>%
 # ggsave("figure 2a_2019.png",width = 80, height = 40, units = "cm",dpi=300,
 #        limitsize = F)
 
-# Appendix Figure S3. 
+# Some regions and nations should be outlined.
+fig3_cbn <- map.world_joined_fig3 %>% 
+  filter(region %in% c("Antigua and Barbuda","Bahamas","Barbados",
+                       "Belize","Bermuda","Cuba","Dominica","Dominican Republic",
+                       "Grenada","Guyana","Haiti","Jamaica","Puerto Rico",
+                       "Saint Vincent and the Grenadines",
+                       "Suriname","Trinidad and Tobago",
+                       "United States Virgin Islands")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-80,y=2,label="Caribbean",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_atg <- map.world_joined_fig3 %>% 
+  filter(region=="Antigua and Barbuda") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.85,y=17,label="ATG",size=8) +
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_vct <- map.world_joined_fig3 %>% 
+  filter(region=="Saint Vincent and the Grenadines") %>%
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.3,y=12.8,label="VCT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_brb <- map.world_joined_fig3 %>% 
+  filter(region=="Barbados") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-59.6,y=13.09,label = "BRB",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_dma <- map.world_joined_fig3 %>% 
+  filter(region=="Dominica") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.4,y=15.3,label="DMA",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_grd <- map.world_joined_fig3 %>% 
+  filter(region=="Grenada") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.75,y=12.225,label="GRD",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_com <- map.world_joined_fig3 %>% 
+  filter(region=="Comoros") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=43.5,y=-12.2,label="COM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_mdv <- map.world_joined_fig3 %>% 
+  filter(region=="Maldives") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=73.415,y=3.375,label="MDV",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+
+fig3_mus <- map.world_joined_fig3 %>% 
+  filter(region=="Mauritius") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=57.4,y=-20.025,label="MUS",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_lca <- map.world_joined_fig3 %>% 
+  filter(region=="Saint Lucia") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.05,y=14.05,label="LCA",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_tto <- map.world_joined_fig3 %>% 
+  filter(region=="Trinidad and Tobago") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-61.6,y=11.25,label="TTO",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_tls <- map.world_joined_fig3 %>% 
+  filter(region=="Timor-Leste") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=124.5,y=-8.3,label="TLS",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_syc <- map.world_joined_fig3 %>% 
+  filter(region=="Seychelles") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=55.425,y=-4.75,label="SYC",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_waf <- map.world_joined_fig3 %>% 
+  filter(region %in% c("Benin","Burkina Faso","Cameroon","Cabo Verde",
+                       "Chad","Côte d'Ivoire","The Gambia","Ghana","Guinea",
+                       "Guinea-Baissau","Liberia","Mali","Mauritania",
+                       "Niger","Nigeria","Sao Tome and Principe","Senegal",
+                       "Sierra Leone","Togo")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-15,y=4,label="W Africa",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_pgf <- map.world_joined_fig3 %>% 
+  filter(region %in% c("Bahrain","Qatar","Oman","Iraq","Iraq","Iran (Islamic Republic of)",
+                       "Saudi Arabia","Kuwait","United Arab Emirates")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=45,y=17,label="Persian Gulf",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_emd <- map.world_joined_fig3 %>% 
+  filter(region %in% c("Cyprus","Greece","Palestine","Lebanon",
+                       "Syria","Jordan","Turkey","Egypt","Israel")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=25,y=22.5,label="E Med",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_mlt <- map.world_joined_fig3 %>% 
+  filter(region=="Malta") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=14.25,y=35.85,label="MLT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_sgp <- map.world_joined_fig3 %>% 
+  filter(region=="Singapore") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=103.725,y=1.275,label="SGP",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_bpa <- map.world_joined_fig3 %>% 
+  filter(region %in% c("Slovenia","Croatia","Bosnia and Herzegovina",
+                       "Serbia","North Macedonia","Italy","Bulgaria","Albania",
+                       "Greece","Turkey","Romania","Republic of Moldova",
+                       "Hungary","Montenegro","Austria")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=25,y=36,label="Balkan Penisula",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_mhl <- map.world_joined_fig3 %>% 
+  filter(region=="Marshall Islands") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=167.5,y=6,label="MHL",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_slb <- map.world_joined_fig3 %>% 
+  filter(region=="Solomon Islands") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill =  asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=157.5,y=-11.5,label="SLB",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_vut <- map.world_joined_fig3 %>% 
+  filter(region=="Vanuatu") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=167,y=-19.5,label="VUT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_fji <- map.world_joined_fig3 %>% 
+  filter(region=="Fiji") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-100,y=-21,label="FJI",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_kir <- map.world_joined_fig3 %>% 
+  filter(region=="Kiribati") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-125,y=-10,label="KIR",size=8) +
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Kiribati",colour = "black")
+
+fig3_fsm <- map.world_joined_fig3 %>% 
+  filter(region=="Micronesia (Federated States of)") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage")+
+  annotate("text",x=140,y=5.5,label="FSM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_wsm <- map.world_joined_fig3 %>% 
+  filter(region=="Samoa") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-172.5,y=-14,label="WSM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig3_ton <- map.world_joined_fig3 %>% 
+  filter(region=="Tonga") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_pct_chg_cat)) +
+  scale_fill_manual(values = c(`-80 to <-60` = "#f7fbff",
+                               `-60 to <-40` = "#deebf7",
+                               `-40 to <-20` = "#c6dbef",
+                               `-20 to <0` = "#9ecae1",
+                               `0 to <20` = "#6baed6",
+                               `20 to <40` = "#4292c6",
+                               `40 to <60` = "#2171b5",
+                               `60 to <80` = "#08519c",
+                               `>=80` = "#08306b"),
+                    name="Percentage") +
+  annotate("text",x=-175,y=-19,label="TON",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+# bind plots
+fig3_combo1 <- ggpubr::ggarrange(fig3_atg,fig3_vct,fig3_brb,fig3_com,
+                                 fig3_dma,fig3_grd,fig3_mdv,fig3_mus,
+                                 fig3_lca,fig3_tto,fig3_tls,fig3_syc,
+                                 ncol = 4,nrow = 3)
+
+fig3_combo2 <- ggpubr::ggarrange(fig3_mlt,fig3_sgp,
+                                 ncol=1,nrow = 2)
+
+fig3_combo2_puls <- ggpubr::ggarrange(fig3_waf,fig3_emd,
+                                      fig3_pgf,fig3_combo2,
+                                      ncol = 2,nrow = 2)
+
+fig3_combo3 <- ggpubr::ggarrange(fig3_mhl,fig3_kir,
+                                 fig3_slb,fig3_fsm,
+                                 fig3_vut,fig3_wsm,
+                                 fig3_fji,fig3_ton,
+                                 ncol = 2,nrow = 4)
+
+ggpubr::ggarrange(fig3_cbn,fig3_combo1,fig3_combo2_puls,
+                  fig3_combo3,ncol = 4)
+
+# ggsave("figure 2b_2019.png",width = 80, height = 16, units = "cm",dpi=300,
+#       limitsize = F)
+# Two figures will be binded togather to generate a new one through PPT.
+
+# Appendix Figure S3. Global OA-NOA suicide-rates ratio in 2019.
+fig4_tbl <- country %>% 
+  filter(measure=="Deaths" & sex=="Both" & year==2019) %>% 
+  select(-cause) %>% 
+  pivot_wider(names_from = c("measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  mutate(total_pop = val_Deaths_Number * 100000 / (val_Deaths_Rate / 100000),
+         age_elder = if_else(age %in% c("10-14 years","15-19 years",
+                                        "20-24 years","25-29 years",
+                                        "30-34 years","35-39 years",
+                                        "40-44 years","45-49 years",
+                                        "50-54 years","55-59 years"),
+                             "10-59 years","60 plus")) %>% 
+  dplyr::group_by(location,year,sex,age_elder) %>% 
+  dplyr::mutate(sum_age_grp_num = sum(total_pop),
+         std_prop_wt = total_pop / sum_age_grp_num) %>% 
+  dplyr::summarize(std_dth_rate = sum(val_Deaths_Rate*std_prop_wt)) %>% 
+  pivot_wider(names_from = "age_elder",
+              values_from = "std_dth_rate") %>% 
+  dplyr::mutate(std_dth_rratio = `60 plus` / `10-59 years`) %>% 
+  select(-c(`10-59 years`,`60 plus`)) %>% 
+  pivot_wider(names_from = c("year","sex"),
+              values_from = "std_dth_rratio")
+
+colnames(fig4_tbl) <- c("region","asmr_ratio")
+
+fig4_tbl %>% filter(asmr_ratio<1) %>% arrange(asmr_ratio)
+
+map.world_joined_fig4 <- left_join(map.world,fig4_tbl,by="region")
+
+map.world_joined_fig4 <- map.world_joined_fig4 %>% 
+  mutate(asmr_ratio_cat = case_when(
+    asmr_ratio>=0 & asmr_ratio<1 ~ "0 to <1",
+    asmr_ratio>=1 & asmr_ratio<2 ~ "1 to <2",
+    asmr_ratio>=2 & asmr_ratio<3 ~ "2 to <3",
+    asmr_ratio>=3 & asmr_ratio<4 ~ "3 to <4",
+    asmr_ratio>=4 & asmr_ratio<5 ~ "4 to <5",
+    asmr_ratio>=5 & asmr_ratio<6 ~ "5 to <6",
+    asmr_ratio>=6 & asmr_ratio<7 ~ "6 to <7",
+    asmr_ratio>=7 & asmr_ratio<8 ~ "7 to <8",
+    asmr_ratio>=8 ~ ">=8",
+    TRUE ~ "")) %>% 
+  filter(asmr_ratio_cat!="") %>% 
+  dplyr::mutate(asmr_ratio_cat = factor(asmr_ratio_cat,
+                                 levels = c("0 to <1",
+                                            "1 to <2",
+                                            "2 to <3",
+                                            "3 to <4",
+                                            "4 to <5",
+                                            "5 to <6",
+                                            "6 to <7",
+                                            "7 to <8",
+                                            ">=8")))
+
+map.world_joined_fig4 %>% ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  ggsn::scalebar(map.world_joined_fig3,dist = 1500,st.size=6, 
+                 height=0.01, transform=T, model = 'International',
+                 dist_unit = "km",location = "bottomleft")+
+  ggsn::north(map.world_joined_fig3,location = "topright",
+              scale = 0.1,symbol = 1)+
+  theme(panel.background = element_rect(fill = "#efedf5")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,panel.grid = element_blank()
+        ,plot.title = element_text(hjust = 0.5,size = 20)
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.text = element_text(color = "#444444",size = 20)
+        ,legend.title = element_text(face = "bold",color = "#444444",
+                                     size = 30)
+        ,legend.background = element_blank()
+        ,legend.key = element_blank())+
+  borders(database = "world",regions = ctry_vtr,colour = "white")
+
+# ggsave("figure 3a_2019.png",width = 80, height = 40, units = "cm",dpi=300,
+#       limitsize = F) 
+# Some regions and nations should be outlined.
+fig4_cbn <- map.world_joined_fig4 %>% 
+  filter(region %in% c("Antigua and Barbuda","Bahamas","Barbados",
+                       "Belize","Bermuda","Cuba","Dominica","Dominican Republic",
+                       "Grenada","Guyana","Haiti","Jamaica","Puerto Rico",
+                       "Saint Vincent and the Grenadines",
+                       "Suriname","Trinidad and Tobago",
+                       "United States Virgin Islands")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-80,y=5,label="Caribbean",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_atg <- map.world_joined_fig4 %>% 
+  filter(region=="Antigua and Barbuda") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.85,y=17.01,label="ATG",size=8) +
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_vct <- map.world_joined_fig4 %>% 
+  filter(region=="Saint Vincent and the Grenadines") %>%
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.3,y=12.8,label="VCT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_brb <- map.world_joined_fig4 %>% 
+  filter(region=="Barbados") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-59.6,y=13.075,label = "BRB",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_dma <- map.world_joined_fig4 %>% 
+  filter(region=="Dominica") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.41,y=15.3,label="DMA",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_grd <- map.world_joined_fig4 %>% 
+  filter(region=="Grenada") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.75,y=12.2,label="GRD",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_com <- map.world_joined_fig4 %>% 
+  filter(region=="Comoros") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=43.5,y=-12.2,label="COM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_mdv <- map.world_joined_fig4 %>% 
+  filter(region=="Maldives") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=73.42,y=3.375,label="MDV",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_mus <- map.world_joined_fig4 %>% 
+  filter(region=="Mauritius") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=57.41,y=-20.04,label="MUS",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_lca <- map.world_joined_fig4 %>% 
+  filter(region=="Saint Lucia") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.03,y=14.05,label="LCA",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_tto <- map.world_joined_fig4 %>% 
+  filter(region=="Trinidad and Tobago") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-61.5,y=11.25,label="TTO",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_tls <- map.world_joined_fig4 %>% 
+  filter(region=="Timor-Leste") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=124.9,y=-8.2,label="TLS",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_syc <- map.world_joined_fig4 %>% 
+  filter(region=="Seychelles") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=55.425,y=-4.75,label="SYC",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_waf <- map.world_joined_fig4 %>% 
+  filter(region %in% c("Benin","Burkina Faso","Cameroon","Cabo Verde",
+                       "Chad","Côte d'Ivoire","The Gambia","Ghana","Guinea",
+                       "Guinea-Baissau","Liberia","Mali","Mauritania",
+                       "Niger","Nigeria","Sao Tome and Principe","Senegal",
+                       "Sierra Leone","Togo")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-10,y=4,label="W Africa",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_pgf <- map.world_joined_fig4 %>% 
+  filter(region %in% c("Bahrain","Qatar","Oman","Iraq","Iraq","Iran (Islamic Republic of)",
+                       "Saudi Arabia","Kuwait","United Arab Emirates")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=45,y=17,label="Persian Gulf",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_emd <- map.world_joined_fig4 %>% 
+  filter(region %in% c("Cyprus","Greece","Palestine","Lebanon",
+                       "Syria","Jordan","Turkey","Egypt","Israel")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=27,y=23,label="E Med",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_mlt <- map.world_joined_fig4 %>% 
+  filter(region=="Malta") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=14.28,y=35.85,label="MLT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_sgp <- map.world_joined_fig4 %>% 
+  filter(region=="Singapore") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=103.74,y=1.28,label="SGP",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_bpa <- map.world_joined_fig4 %>% 
+  filter(region %in% c("Slovenia","Croatia","Bosnia and Herzegovina",
+                       "Serbia","North Macedonia","Italy","Bulgaria","Albania",
+                       "Greece","Turkey","Romania","Republic of Moldova",
+                       "Hungary","Montenegro","Austria")) %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=25,y=36,label="Balkan Penisula",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_mhl <- map.world_joined_fig4 %>% 
+  filter(region=="Marshall Islands") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=168,y=6.5,label="MHL",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Marshall Islands",colour = "black")
+
+fig4_slb <- map.world_joined_fig4 %>% 
+  filter(region=="Solomon Islands") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=158,y=-11.5,label="SLB",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Solomon Islands",colour = "black")
+
+fig4_vut <- map.world_joined_fig4 %>% 
+  filter(region=="Vanuatu") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=167.5,y=-19,label="VUT",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Vanuatu",colour = "black")
+
+fig4_fji <- map.world_joined_fig4 %>% 
+  filter(region=="Fiji") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-125,y=-20,label="FJI",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Fiji",colour = "black")
+
+fig4_kir <- map.world_joined_fig4 %>% 
+  filter(region=="Kiribati") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-125,y=-10,label="KIR",size=8) +
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Kiribati",colour = "black")
+
+fig4_fsm <- map.world_joined_fig4 %>% 
+  filter(region=="Micronesia (Federated States of)") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b"))+
+  annotate("text",x=145,y=5.9,label="FSM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")+
+  borders(database = "world" ,regions = "Micronesia",colour = "black")
+
+fig4_wsm <- map.world_joined_fig4 %>% 
+  filter(region=="Samoa") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-172.4,y=-14,label="WSM",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+fig4_ton <- map.world_joined_fig4 %>% 
+  filter(region=="Tonga") %>% 
+  ggplot() +
+  geom_polygon(aes(x = long, y = lat, group = group, fill = asmr_ratio_cat)) +
+  scale_fill_manual(name="Suicide age ratio",
+                    values = c(`0 to <1` = "#f7fbff",
+                               `1 to <2` = "#deebf7",
+                               `2 to <3` = "#c6dbef",
+                               `3 to <4` = "#9ecae1",
+                               `4 to <5` = "#6baed6",
+                               `5 to <6` = "#4292c6",
+                               `6 to <7` = "#2171b5",
+                               `7 to <8` = "#08519c",
+                               `>=8` = "#08306b")) +
+  annotate("text",x=-175,y=-21,label="TON",size=8)+
+  theme(panel.background = element_rect(fill = "white")
+        ,plot.background = element_rect(fill = "#efedf5")
+        ,axis.text = element_blank()
+        ,axis.title = element_blank()
+        ,panel.grid = element_blank()
+        ,axis.ticks = element_blank()
+        ,legend.position = "none")
+
+# bind plots
+fig4_combo1 <- ggpubr::ggarrange(fig4_atg,fig4_vct,fig4_brb,fig4_com,
+                                 fig4_dma,fig4_grd,fig4_mdv,fig4_mus,
+                                 fig4_lca,fig4_tto,fig4_tls,fig4_syc,
+                                 ncol = 4,nrow = 3)
+
+fig4_combo2 <- ggpubr::ggarrange(fig4_mlt,fig4_sgp,
+                                 ncol=1,nrow = 2)
+
+fig4_combo2_puls <- ggpubr::ggarrange(fig4_waf,fig4_emd,
+                                      fig4_pgf,fig4_combo2,
+                                      ncol = 2,nrow = 2)
+
+fig4_combo3 <- ggpubr::ggarrange(fig4_mhl,fig4_kir,
+                                 fig4_slb,fig4_fsm,
+                                 fig4_vut,fig4_wsm,
+                                 fig4_fji,fig4_ton,
+                                 ncol = 2,nrow = 4)
+
+ggpubr::ggarrange(fig4_cbn,fig4_combo1,fig4_combo2_puls,
+                  fig4_combo3,ncol = 4)
+
+# ggsave("figure 3b_2019.png",width = 80, height = 16, units = "cm",dpi=300,
+#        limitsize = F)
+# Two figures are exported and combined into a new one through PPT.
 
 
