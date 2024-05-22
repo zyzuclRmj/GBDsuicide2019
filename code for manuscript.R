@@ -474,7 +474,83 @@ merged_tbl3 <- left_join(tbl3_dthrate2,tbl3_dthrate_pctchg,
 
 # write.csv(merged_tbl3,"Table 2_ver2019.csv")
 
+# Table 3. ASSR ratio for individuals age 60 and older by  5-year groups relative to individuals ages 10 to 59 years as well as the percent change in ASSR ratios between 1990 and 2019.
+tbl4_dth_rratio <- regions %>% 
+  filter(measure=="Deaths" & sex=="Both" & year %in% c(1990,2019)) %>% 
+  select(-cause) %>% 
+  dplyr::group_by(location,year,sex) %>% 
+  pivot_wider(names_from = c("sex","measure","metric"),
+              values_from = c("val","upper","lower")) %>% 
+  dplyr::mutate(age=recode(age,"10-14 years" = "60 below",
+                    "15-19 years" = "60 below",
+                    "20-24 years" = "60 below",
+                    "25-29 years" = "60 below",
+                    "30-34 years" = "60 below",
+                    "35-39 years" = "60 below",
+                    "40-44 years" = "60 below",
+                    "45-49 years" = "60 below",
+                    "50-54 years" = "60 below",
+                    "55-59 years" = "60 below"),
+         age_grp_num = val_Both_Deaths_Number * 10^10 / (val_Both_Deaths_Rate/100),
+         wider_sd = if_else((upper_Both_Deaths_Number - val_Both_Deaths_Number)>
+                              (lower_Both_Deaths_Number - val_Both_Deaths_Number),
+                            upper_Both_Deaths_Number,lower_Both_Deaths_Number),
+         sd = (wider_sd - val_Both_Deaths_Number)*10^5 / 1.96 * sqrt(1000),
+         var = sd^2) %>% 
+  dplyr::group_by(location,year,age) %>% 
+  dplyr::summarize(sum_dthnum = sum(val_Both_Deaths_Number*10^5),
+            sum_age_grp_num = sum(age_grp_num), 
+            sum_var = sum(var)) %>% 
+  dplyr::mutate(val_asmr = sum_dthnum / sum_age_grp_num,
+         var_asmr = sum_var / (1000 * sum_age_grp_num^2),
+         sd_asmr = sqrt(var_asmr)) %>% 
+  select(-c(sum_dthnum,sum_age_grp_num,sum_var,var_asmr,sd_asmr)) %>% 
+  pivot_wider(names_from = "age",
+              values_from = "val_asmr") %>% 
+  dplyr::mutate(val_asmr_ratio_6460 = `60-64 years` / `60 below`,
+         val_asmr_ratio_6960 = `65-69 years` / `60 below`,
+         val_asmr_ratio_7460 = `70-74 years` / `60 below`,
+         val_asmr_ratio_7960 = `75-79 years` / `60 below`,
+         val_asmr_ratio_8460 = `80-84` / `60 below`,
+         val_asmr_ratio_8960 = `85-89` / `60 below`,
+         val_asmr_ratio_9460 = `90-94` / `60 below`,
+         val_asmr_ratio_9560 = `95+ years` / `60 below`) %>% 
+  select(-c(`60 below`,`60-64 years`,`65-69 years`,`70-74 years`,`75-79 years`,
+            `80-84`,`85-89`,`90-94`,`95+ years`)) %>% 
+  pivot_wider(names_from = "year",
+              values_from = c("val_asmr_ratio_6460",
+                              "val_asmr_ratio_6960",
+                              "val_asmr_ratio_7460",
+                              "val_asmr_ratio_7960",
+                              "val_asmr_ratio_8460",
+                              "val_asmr_ratio_8960",
+                              "val_asmr_ratio_9460",
+                              "val_asmr_ratio_9560")) %>% 
+  dplyr::mutate(val_asmr_ratio_pct_chg_6460 = (val_asmr_ratio_6460_2019 - 
+                                          val_asmr_ratio_6460_1990) * 100 / val_asmr_ratio_6460_1990,
+         val_asmr_ratio_pct_chg_6960 = (val_asmr_ratio_6960_2019 - 
+                                          val_asmr_ratio_6960_1990) * 100 / val_asmr_ratio_6960_1990,
+         val_asmr_ratio_pct_chg_7460 = (val_asmr_ratio_7460_2019 - 
+                                          val_asmr_ratio_7460_1990) * 100 / val_asmr_ratio_7460_1990,
+         val_asmr_ratio_pct_chg_7960 = (val_asmr_ratio_7960_2019 - 
+                                          val_asmr_ratio_7960_1990) * 100 / val_asmr_ratio_7960_1990,
+         val_asmr_ratio_pct_chg_8460 = (val_asmr_ratio_8460_2019 - 
+                                          val_asmr_ratio_8460_1990) * 100 / val_asmr_ratio_8460_1990,
+         val_asmr_ratio_pct_chg_8960 = (val_asmr_ratio_8960_2019 - 
+                                          val_asmr_ratio_8960_1990) * 100 / val_asmr_ratio_8960_1990,
+         val_asmr_ratio_pct_chg_9460 = (val_asmr_ratio_9460_2019 - 
+                                          val_asmr_ratio_9460_1990) * 100 / val_asmr_ratio_9460_1990,
+         val_asmr_ratio_pct_chg_9560 = (val_asmr_ratio_9560_2019 - 
+                                          val_asmr_ratio_9560_1990) * 100 / val_asmr_ratio_9560_1990)
 
+tbl4_dth_rratio[,c(2:25)] <- tbl4_dth_rratio[,c(2:25)] %>% 
+  round(digits = 2)
+
+location <- tbl3_dthrate2[,1]
+
+tbl4_dth_rratio <- left_join(location,tbl4_dth_rratio,by="location")
+
+# write.csv(tbl4_dth_rratio,"Table 3_ver2019.csv")
 
 
 
