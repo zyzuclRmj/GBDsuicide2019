@@ -552,5 +552,80 @@ tbl4_dth_rratio <- left_join(location,tbl4_dth_rratio,by="location")
 
 # write.csv(tbl4_dth_rratio,"Table 3_ver2019.csv")
 
+# Figure 1. OA ASSR by super regions, age groups and gender in 2019.
+fig5_tbl <- super_regions %>% 
+  filter(measure=="Deaths" & metric=="Rate" & year==2019 & 
+           age %in% c("60-64 years","65-69 years","70-74 years",
+                      "75-79 years","80-84 years","85-89 years",
+                      "90-94 years","95+ years") & 
+           location %in% c("South Asia","Latin America and Caribbean",
+                           "North Africa and Middle East",
+                           "Central Europe, Eastern Europe, and Central Asia",
+                           "High-income",
+                           "Southeast Asia, East Asia, and Oceania",
+                           "Sub-Saharan Africa",
+                           "Global")) %>% 
+  select(-c(cause,measure,metric,upper,lower))
+
+wrapit <- function(text) {
+  wtext <- paste(strwrap(text,width=20),collapse=" \n ")
+  return(wtext)
+}
+
+fig5_tbl$location <- plyr::llply(fig5_tbl$location, wrapit)
+fig5_tbl$location <- unlist(fig5_tbl$location)
+
+fig5_tbl <- fig5_tbl %>% 
+  mutate(location = factor(location,
+                           c("Global",
+                             "South Asia",
+                             "Latin America and \n Caribbean",
+                             "North Africa and \n Middle East",
+                             "Central Europe, \n Eastern Europe, and \n Central Asia",
+                             "High-income",
+                             "Southeast Asia, \n East Asia, and \n Oceania",
+                             "Sub-Saharan Africa")))
+
+fig5_tbl <- fig5_tbl %>% mutate(sex = recode(sex,"Both" = "Total population",
+                                             "Female" = "Women",
+                                             "Male" = "Men"))
+fig5_tbl$sex <- plyr::llply(fig5_tbl$sex, wrapit)
+fig5_tbl$sex <- unlist(fig5_tbl$sex)
+
+fig5_tbl <- fig5_tbl %>% 
+  mutate(sex = factor(sex,c("Total population","Women","Men")))
+
+fig5_tbl %>%
+  group_by(location) %>% 
+  ggplot(aes(x=age,y=val,fill=age))+
+  geom_histogram(stat = "identity")+
+  facet_grid(sex ~ location)+
+  scale_fill_brewer(palette = "Purples",
+                    name="Age")+
+  scale_y_continuous(breaks = c(0,25,50,75,100,125))+
+  theme_bw()+
+  ylab("Age-specific suicide rate")+
+  theme(axis.title.x = element_blank(),
+        axis.text.x = element_blank(),
+        axis.ticks.x = element_blank(),
+        panel.grid = element_blank(),
+        panel.background = element_rect(fill = "#d9d9d9"),
+        plot.background = element_rect(fill = "#d9d9d9"),
+        strip.text.x = element_text(size = 6,
+                                    face = "bold",
+                                    margin = margin(1,0,1,0, "cm")),
+        strip.text.y = element_text(size = 7,
+                                    face = "bold",
+                                    angle = 360),
+        strip.background = element_rect(fill = "white"),
+        legend.position = "right",
+        legend.background = element_blank(),
+        legend.key = element_blank(),
+        legend.text = element_text(family = "Gill Sans",color = "#444444",
+                                   size = 5),
+        legend.title = element_text(family = "Gill Sans",face="bold",
+                                    color = "#444444",size = 8))
+
+# ggsave("figure 4_2019.png", width = 26, height = 18, units = "cm",dpi=300)
 
 
